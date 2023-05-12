@@ -3,7 +3,7 @@
 ## Installation
 Available via Composer
 
-``composer require elielelie/mvc-core``
+``composer require elielelie/leafy-core``
 
 ## License
 The MIT License (MIT). Please see [License File](LICENSE) for more information.
