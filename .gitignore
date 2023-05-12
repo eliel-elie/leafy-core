@@ -1,0 +1,6 @@
+.idea
+vendor/
+tests/
+mvc-core.iml
+.env
+.phpunit.result.cache

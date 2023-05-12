@@ -1,0 +1,40 @@
+{
+  "name": "eliel-elie/mvc-core",
+  "description": "The Minimalistic custom framework created with Eloquent ORM.",
+  "keywords": ["mvc","eloquent","php"],
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "LeafyTech\\Core\\": "src/"
+    },
+    "files": [
+      "src/Helpers/helpers.php"
+    ]
+  },
+  "authors": [
+    {
+      "name": "Eliel Ferreira",
+      "email": "eliel_elie@hotmail.com"
+    }
+  ],
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "require": {
+      "PHP": ">=7.4",
+      "illuminate/database": "8.*",
+      "illuminate/events": "8.*",
+      "illuminate/console": "8.*",
+      "yajra/laravel-oci8": "8.4",
+      "vlucas/phpdotenv": "^5.4",
+      "ext-json": "*"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5"
+  }
+}
