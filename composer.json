@@ -1,5 +1,5 @@
 {
-  "name": "eliel-elie/mvc-core",
+  "name": "elielelie/leafy-core",
   "description": "The Minimalistic custom framework created with Eloquent ORM.",
   "keywords": ["mvc","eloquent","php"],
   "type": "library",
