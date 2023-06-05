@@ -80,7 +80,7 @@ class Application
         }
     }
 
-    public function login(UserModel $user, ?Ldap $ldap)
+    public function login(UserModel $user, ?Ldap $ldap, bool $automaticallyRedirectPreviousUrl = true)
     {
 
         $user->userid     = $ldap->userId();
@@ -96,7 +96,7 @@ class Application
 
         self::$app->session->set('user', $user);
 
-        if(self::$app->session->get('previews_url') !== null) {
+        if(self::$app->session->get('previews_url') !== null && $automaticallyRedirectPreviousUrl) {
 
             $goTo = self::$app->session->get('previews_url');
             self::$app->session->remove('previews_url');
@@ -111,6 +111,7 @@ class Application
     {
         $this->user = null;
         self::$app->session->remove('user');
+        session_destroy();
     }
 
     public function getHomeUri(): string
