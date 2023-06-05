@@ -2,6 +2,7 @@
 
 namespace LeafyTech\Core;
 
+use Illuminate\Support\Str;
 use LeafyTech\Core\Helpers\FlashMessages;
 
 class Session
@@ -12,6 +13,7 @@ class Session
 
     public function __construct()
     {
+        session_name(Str::slug(app()->config->app['name'], '_').'_session');
         session_start();
         $this->msg = new FlashMessages();
 
