@@ -12,9 +12,9 @@ class Database
 {
     protected array $sessionVars = [
         'NLS_TIME_FORMAT'         => 'HH24:MI:SS',
-        'NLS_DATE_FORMAT'         => 'DD/MM/YYYY',
-        'NLS_TIMESTAMP_FORMAT'    => 'DD/MM/YYYY HH24:MI:SS',
-        'NLS_TIMESTAMP_TZ_FORMAT' => 'DD/MM/YYYY HH24:MI:SS TZH:TZM',
+        'NLS_DATE_FORMAT'         => 'MM/DD/YYYY',
+        'NLS_TIMESTAMP_FORMAT'    => 'MM/DD/YYYY HH24:MI:SS',
+        'NLS_TIMESTAMP_TZ_FORMAT' => 'MM/DD/YYYY HH24:MI:SS TZH:TZM',
         'NLS_NUMERIC_CHARACTERS'  => '.,',
     ];
 
