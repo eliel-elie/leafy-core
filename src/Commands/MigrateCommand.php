@@ -96,9 +96,9 @@ class MigrateCommand extends BaseCommand
 
         $batch = $this->migrator->getRepository()->getNextBatchNumber();
 
-        $this->requireFiles($filesMigration);
+        $this->requireFiles($pending);
 
-        foreach ($filesMigration as $file) {
+        foreach ($pending as $file) {
 
             $name  = $this->migrator->getMigrationName($file);
             $class = $this->migrator->resolve($name);
