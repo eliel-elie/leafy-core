@@ -22,11 +22,12 @@
   "prefer-stable": true,
   "require": {
     "PHP": "^7.4|^8.0",
-    "vlucas/phpdotenv": "^5.5",
     "ext-json": "*",
+    "vlucas/phpdotenv": "^5.5",
     "illuminate/database": "^9.52",
     "illuminate/events": "^9.52",
-    "illuminate/console": "^9.52"
+    "illuminate/console": "^9.52",
+    "yajra/laravel-oci8": "^9.5"
   },
   "autoload-dev": {
     "psr-4": {
