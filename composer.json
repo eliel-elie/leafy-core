@@ -21,13 +21,12 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-      "PHP": ">=7.4",
-      "illuminate/database": "8.*",
-      "illuminate/events": "8.*",
-      "illuminate/console": "8.*",
-      "yajra/laravel-oci8": "8.4",
-      "vlucas/phpdotenv": "^5.4",
-      "ext-json": "*"
+    "PHP": "^7.4|^8.0",
+    "vlucas/phpdotenv": "^5.5",
+    "ext-json": "*",
+    "illuminate/database": "^9.52",
+    "illuminate/events": "^9.52",
+    "illuminate/console": "^9.52"
   },
   "autoload-dev": {
     "psr-4": {
