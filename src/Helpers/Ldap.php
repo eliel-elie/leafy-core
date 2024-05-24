@@ -46,14 +46,22 @@ class Ldap
 
     public function connect()
     {
-        $this->connection = ldap_connect($this->configuration['host'], $this->configuration['port']);
+        $hosts = explode(',',$this->configuration['host']);
 
-        if($this->connection) {
-            foreach ($this->prepareOptions() as $option => $value) {
-                $this->setOption($option, $value);
+        foreach ($hosts as $host) {
+
+            $this->connection = ldap_connect($host, $this->configuration['port']);
+
+            if($this->connection) {
+                foreach ($this->prepareOptions() as $option => $value) {
+                    $this->setOption($option, $value);
+                }
+                return $this;
             }
         }
-        return $this;
+
+        throw new Exception('Failed to connect to LDAP hosts.');
+
     }
 
     public function close()
