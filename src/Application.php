@@ -27,10 +27,13 @@ class Application
     public View $view;
     public Database $capsule;
 
+    protected string $basePath;
+
     public function __construct($rootDir)
     {
         self::$app      = $this;
         self::$ROOT_DIR = $rootDir;
+        $this->basePath = $rootDir;
 
         $this->config   = new Config($_ENV);
 
@@ -57,7 +60,7 @@ class Application
      * @param array $events
      * @return void
      */
-    public function eventRegister(array $events)
+    public function eventRegister(array $events): void
     {
         foreach ($events as $event => $listeners) {
             foreach (array_unique($listeners) as $listener) {
@@ -107,7 +110,7 @@ class Application
         }
     }
 
-    public function logout()
+    public function logout(): void
     {
         $this->user = null;
         self::$app->session->remove('user');
@@ -139,7 +142,7 @@ class Application
         return file_exists($this->storagePath() .'/framework/down');
     }
 
-    public function run()
+    public function run(): void
     {
         if($this->isDownForMaintenance()) {
             echo $this->view->renderWithoutTemplate('/framework/maintenance', $this->storagePath());
@@ -171,4 +174,8 @@ class Application
         throw new RuntimeException('Unable to detect application namespace.');
     }
 
+    public function basePath($path = ''): string
+    {
+        return $this->basePath.($path != '' ? DIRECTORY_SEPARATOR.$path : '');
+    }
 }

@@ -74,3 +74,10 @@ if (! function_exists('now')) {
         return new DateTime();
     }
 }
+
+if (! function_exists('base_path')) {
+    function base_path($path = ''): string
+    {
+        return app()->basePath($path);
+    }
+}
