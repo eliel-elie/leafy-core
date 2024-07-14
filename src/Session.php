@@ -24,7 +24,7 @@ class Session
         return session_id();
     }
 
-    public function set($key, $value)
+    public function set($key, $value): void
     {
         $_SESSION[$key] = $value;
     }
@@ -34,7 +34,7 @@ class Session
         return $_SESSION[$key] ?? false;
     }
 
-    public function remove($key)
+    public function remove($key): void
     {
         unset($_SESSION[$key]);
     }
@@ -49,7 +49,7 @@ class Session
         $this->removeFlashMessages();
     }
 
-    private function removeFlashMessages()
+    private function removeFlashMessages(): void
     {
         $flashMessages = $_SESSION[self::FLASH_KEY] ?? [];
     }

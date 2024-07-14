@@ -61,7 +61,7 @@ class Response
         return $this;
     }
 
-    public function redirect($url)
+    public function redirect($url): void
     {
         $url = $url === '/' ? env('APP_URL') : $url;
         header("Location: $url");
