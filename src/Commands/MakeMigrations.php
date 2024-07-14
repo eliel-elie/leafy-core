@@ -105,7 +105,7 @@ class MakeMigrations extends BaseCommand
     protected function getMigrationPath(): string
     {
         if (! is_null($targetPath = $this->input->getOption('path'))) {
-            return Application::$ROOT_DIR .$targetPath;
+            return app()->basePath($targetPath);
         }
         return parent::getMigrationPath();
     }
