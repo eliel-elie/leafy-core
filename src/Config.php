@@ -14,12 +14,11 @@ class Config
                 'key'        => $env['APP_KEY'],
                 'name'       => $env['APP_NAME'],
                 'url'        => $env['APP_URL'],
-                'folder'     => $env['APP_FOLDER'],
+                'folder'     => $env['APP_FOLDER'] ?? null,
                 'debug'      => $env['APP_DEBUG'],
                 'auth'       => $env['APP_AUTH'],
                 'prefix'     => $env['APP_PREFIX'] ?? null,
                 'devPrefix'  => $env['APP_DEV_PREFIX'] ?? null,
-
             ],
             'db'     => [
                 'driver'   => $env['DB_DRIVER'],
