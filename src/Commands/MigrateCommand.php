@@ -10,6 +10,8 @@ use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use ReflectionClass;
 
 class MigrateCommand extends BaseCommand
 {
@@ -82,7 +84,7 @@ class MigrateCommand extends BaseCommand
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $ranMigration   = $this->migrator->getRepository()->getRan();
         $filesMigration = $this->migrator->getMigrationFiles($this->getMigrationPath());
@@ -101,7 +103,7 @@ class MigrateCommand extends BaseCommand
         foreach ($pending as $file) {
 
             $name  = $this->migrator->getMigrationName($file);
-            $class = $this->migrator->resolve($name);
+            $class = $this->resolvePath($file);
 
             $this->comment("Migrating: {$name}");
 
@@ -120,7 +122,6 @@ class MigrateCommand extends BaseCommand
             }
         }
 
-
         return 0;
     }
 
@@ -131,7 +132,7 @@ class MigrateCommand extends BaseCommand
      * @param  array  $ran
      * @return array
      */
-    protected function pendingMigrations($files, $ran)
+    protected function pendingMigrations($files, $ran): array
     {
         return Collection::make($files)
             ->reject(function ($file) use ($ran) {
@@ -145,7 +146,7 @@ class MigrateCommand extends BaseCommand
      * @param  array  $files
      * @return void
      */
-    public function requireFiles(array $files)
+    public function requireFiles(array $files): void
     {
         foreach ($files as $file) {
             $this->files->requireOnce($file);
@@ -164,6 +165,30 @@ class MigrateCommand extends BaseCommand
         //        '--database' => $this->option('database'),
         //    ]));
         //}
+    }
+
+    protected function getMigrationClass(string $migrationName): string
+    {
+        return Str::studly(implode('_', array_slice(explode('_', $migrationName), 4)));
+    }
+
+    protected function resolvePath(string $path)
+    {
+        $class = $this->getMigrationClass($this->migrator->getMigrationName($path));
+
+        if (class_exists($class) && realpath($path) == (new ReflectionClass($class))->getFileName()) {
+            return new $class;
+        }
+
+        $migration = $this->files->getRequire($path);
+
+        if (is_object($migration)) {
+            return method_exists($migration, '__construct')
+                ? $this->files->getRequire($path)
+                : clone $migration;
+        }
+
+        return new $class;
     }
 
 }

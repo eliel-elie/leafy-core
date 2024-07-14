@@ -9,6 +9,8 @@ use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use ReflectionClass;
 
 class RollbackCommand extends BaseCommand
 {
@@ -100,7 +102,7 @@ class RollbackCommand extends BaseCommand
             $rolledBack[] = $file;
 
             $name  = $this->migrator->getMigrationName($file);
-            $class = $this->migrator->resolve($name);
+            $class = $this->resolvePath($file);
 
             $this->comment("Rolling back: {$name}");
 
@@ -131,5 +133,28 @@ class RollbackCommand extends BaseCommand
         }
     }
 
+    protected function getMigrationClass(string $migrationName): string
+    {
+        return Str::studly(implode('_', array_slice(explode('_', $migrationName), 4)));
+    }
+
+    protected function resolvePath(string $path)
+    {
+        $class = $this->getMigrationClass($this->migrator->getMigrationName($path));
+
+        if (class_exists($class) && realpath($path) == (new ReflectionClass($class))->getFileName()) {
+            return new $class;
+        }
+
+        $migration = $this->files->getRequire($path);
+
+        if (is_object($migration)) {
+            return method_exists($migration, '__construct')
+                ? $this->files->getRequire($path)
+                : clone $migration;
+        }
+
+        return new $class;
+    }
 
 }
