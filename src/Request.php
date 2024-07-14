@@ -25,33 +25,35 @@ class Request
 
     public function getMethod(): string
     {
-        return strtolower($_SERVER['REQUEST_METHOD']);
+        return $_SERVER['REQUEST_METHOD'];
     }
 
     public function isGet(): bool
     {
-        return $this->getMethod() === 'get';
+        return $this->getMethod() === 'GET';
     }
 
     public function isPost(): bool
     {
-        return $this->getMethod() === 'post';
+        return $this->getMethod() === 'POST';
     }
 
     public function getBody(): array
     {
-        $data = [];
         if ($this->isGet()) {
-            foreach ($_GET as $key => $value) {
-                $data[$key] = filter_input(INPUT_GET, $key, FILTER_SANITIZE_SPECIAL_CHARS);
-            }
+            return filter_input_array(INPUT_GET);
         }
+
         if ($this->isPost()) {
-            foreach ($_POST as $key => $value) {
-                $data[$key] = filter_input(INPUT_POST, $key, FILTER_SANITIZE_SPECIAL_CHARS);
-            }
+            return filter_input_array(INPUT_POST);
         }
-        return $data;
+
+        if (in_array($this->getMethod(), ['PUT', 'PATCH', 'DELETE']) && !empty($_SERVER['CONTENT_LENGTH'])) {
+            parse_str(file_get_contents('php://input', false, null, 0, $_SERVER['CONTENT_LENGTH']), $data);
+            return $data;
+        }
+
+        return [];
     }
 
     public function setRouteParams($params): Request
