@@ -3,6 +3,7 @@
 use LeafyTech\Core\Application;
 use LeafyTech\Core\Helpers\Env;
 use LeafyTech\Core\Helpers\FlashMessages;
+use LeafyTech\Core\Request;
 use LeafyTech\Core\Response;
 use LeafyTech\Core\Session;
 
@@ -25,6 +26,14 @@ if (!function_exists('response')) {
         return new Response($content, $data, $status, $headers);
     }
 }
+
+if (!function_exists('request')) {
+    function request(): Request
+    {
+        return Application::$app->router->getRequest();
+    }
+}
+
 if (! function_exists('app')) {
     function app(): Application
     {
@@ -59,10 +68,11 @@ if (! function_exists('session')) {
         return Application::$app->session;
     }
 }
+
 if (! function_exists('fileVersion')) {
     function fileVersion($file, $type = 'js', $dirRoot = 'templates')
     {
-        $fileNameWithPath = Application::$ROOT_DIR . '/' . $dirRoot . '/' . $file . '.' . $type;
+        $fileNameWithPath = app()->basePath( $dirRoot.DIRECTORY_SEPARATOR. $file . '.' . $type);
         if (!file_exists($fileNameWithPath)) return $file;
         return filemtime($fileNameWithPath);;
     }
