@@ -6,8 +6,8 @@ use LeafyTech\Core\Middlewares\BaseMiddleware;
 
 class Controller
 {
-    public string $layout = 'layout';
-    public string $action = '';
+    public string $layout        = 'layout';
+    public string $action        = '';
 
     protected array $middlewares = [];
 
@@ -21,7 +21,7 @@ class Controller
         return Application::$app->router->renderView($view, $params, $css, $script);
     }
 
-    public function registerMiddleware(BaseMiddleware $middleware)
+    public function registerMiddleware(BaseMiddleware $middleware): void
     {
         $this->middlewares[] = $middleware;
     }
