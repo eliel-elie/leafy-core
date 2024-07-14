@@ -72,7 +72,7 @@ class MakeMigrations extends BaseCommand
 
         $this->writeMigration($name, $table, $create);
 
-        print_r($table);
+        return 0;
     }
 
     /**
