@@ -19,7 +19,7 @@ class View
 
         $viewContent = $this->renderViewOnly($view, $params);
         ob_start();
-        include_once Application::$ROOT_DIR."/templates/$layoutName.php";
+        include_once app()->basePath("templates/$layoutName.php");
         $layoutContent = ob_get_clean();
         return str_replace('{{content}}', $viewContent, $layoutContent);
     }
@@ -30,7 +30,7 @@ class View
             $$key = $value;
         }
         ob_start();
-        include_once Application::$ROOT_DIR."/views/$view.php";
+        include_once app()->basePath("views/$view.php");
         return ob_get_clean();
     }
 
