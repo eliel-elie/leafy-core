@@ -33,27 +33,27 @@ class Router
 
     public function get($route, $callback): Router
     {
-        return $this->register('get', $route, $callback);
+        return $this->register('GET', $route, $callback);
     }
 
     public function post($route, $callback): Router
     {
-        return $this->register('post', $route, $callback);
+        return $this->register('POST', $route, $callback);
     }
 
     public function put($route, $callback): Router
     {
-        return $this->register('put', $route, $callback);
+        return $this->register('PUT', $route, $callback);
     }
 
     public function patch($route, $callback): Router
     {
-        return $this->register('patch', $route, $callback);
+        return $this->register('PATCH', $route, $callback);
     }
 
     public function delete($route, $callback): Router
     {
-        return $this->register('delete', $route, $callback);
+        return $this->register('DELETE', $route, $callback);
     }
 
     public function resolve()
@@ -97,6 +97,11 @@ class Router
 
         return call_user_func($callback, $this->request, $this->response);
 
+    }
+
+    public function getRequest(): Request
+    {
+        return $this->request;
     }
 
     public function getRouteMap($method): array
