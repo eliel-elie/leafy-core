@@ -3,6 +3,7 @@
 namespace LeafyTech\Core;
 
 use Illuminate\Events\Dispatcher;
+use LeafyTech\Core\Exception\NotFoundException;
 use LeafyTech\Core\Helpers\Ldap;
 use LeafyTech\Core\Helpers\RouteHelper;
 use RuntimeException;
@@ -15,7 +16,6 @@ class Application
     public Response $response;
 
     public static Application $app;
-    public static string $ROOT_DIR;
     public string $layout = 'layout';
 
     public ?Controller $controller = null;
@@ -32,7 +32,6 @@ class Application
     public function __construct($rootDir)
     {
         self::$app      = $this;
-        self::$ROOT_DIR = $rootDir;
         $this->basePath = $rootDir;
 
         $this->config   = new Config($_ENV);
@@ -51,7 +50,7 @@ class Application
 
     public function boot(): Application
     {
-        RouteHelper::includeRouteFiles(self::$ROOT_DIR . '/routes');
+        RouteHelper::includeRouteFiles(app()->basePath('/routes'));
         return $this;
     }
 
@@ -69,7 +68,7 @@ class Application
         }
     }
 
-    public function eventSubscribe(array $subscribes)
+    public function eventSubscribe(array $subscribes): void
     {
         foreach ($subscribes as $subscriber) {
             $this->events->subscribe($subscriber);
@@ -134,7 +133,7 @@ class Application
 
     public function storagePath(): string
     {
-        return self::$ROOT_DIR.'/storage';
+        return app()->basePath('storage');
     }
 
     public function isDownForMaintenance(): bool
@@ -159,13 +158,17 @@ class Application
 
     }
 
-    public function getNamespace()
+    public function getNamespace(): int|string
     {
-        $composer = json_decode(file_get_contents(self::$ROOT_DIR.DIRECTORY_SEPARATOR.'composer.json'), true);
+        if (!file_exists($this->basePath('composer.json'))) {
+            throw new NotFoundException('Composer.json file not found');
+        }
+
+        $composer = json_decode(file_get_contents(app()->basePath('composer.json')), true);
 
         foreach ((array) data_get($composer, 'autoload.psr-4') as $namespace => $path) {
             foreach ((array) $path as $pathChoice) {
-                if (realpath(self::$ROOT_DIR.DIRECTORY_SEPARATOR.'app') === realpath(self::$ROOT_DIR.DIRECTORY_SEPARATOR.$pathChoice)) {
+                if (realpath(app()->basePath('app')) === realpath(app()->basePath($pathChoice))) {
                     return $namespace;
                 }
             }
@@ -176,6 +179,6 @@ class Application
 
     public function basePath($path = ''): string
     {
-        return $this->basePath.($path != '' ? DIRECTORY_SEPARATOR.$path : '');
+        return $this->basePath.($path !== '' ? DIRECTORY_SEPARATOR.$path : '');
     }
 }
