@@ -10,6 +10,8 @@ use Yajra\Oci8\Oci8Connection;
 
 class Database
 {
+    const ORACLE_DRIVER          = 'oracle';
+
     protected array $sessionVars = [
         'NLS_TIME_FORMAT'         => 'HH24:MI:SS',
         'NLS_DATE_FORMAT'         => 'MM/DD/YYYY',
@@ -24,37 +26,41 @@ class Database
     {
         $this->capsule = new Capsule;
 
-        if($config->db['driver'] === 'oracle') {
+        foreach ($config->connections as $key => $connection) {
 
-            $manager = $this->capsule->getDatabaseManager();
+            if ($connection['driver'] === self::ORACLE_DRIVER) {
 
-            $manager->extend('oracle', function($configuration) use ($config)
-            {
-                $connector = new OracleConnector();
-                $connection = $connector->connect($configuration);
-                $db = new Oci8Connection($connection, $config->db['database'], $config->db["prefix"]);
+                $manager = $this->capsule->getDatabaseManager();
 
-                if (isset($configuration['schema'])) {
-                    $this->sessionVars['CURRENT_SCHEMA'] = $configuration['schema'];
-                }
+                $manager->extend(self::ORACLE_DRIVER, function($configuration) use ($connection) {
 
-                $db->setSessionVars($this->sessionVars);
+                    $connector  = new OracleConnector();
+                    $connection = $connector->connect($configuration);
+                    $db = new Oci8Connection($connection, $connection['database'], $connection["prefix"]);
 
-                return $db;
-            });
+                    if (isset($configuration['schema'])) {
+                        $this->sessionVars['CURRENT_SCHEMA'] = $configuration['schema'];
+                    }
+
+                    $db->setSessionVars($this->sessionVars);
+
+                    return $db;
+                });
+
+            }
+
+            $this->capsule->addConnection([
+                'driver'   => $connection['driver'],
+                'host'     => $connection['host'],
+                'port'     => $connection['port'],
+                'database' => $connection['database'],
+                'username' => $connection['username'],
+                'password' => $connection['password'],
+                'charset'  => $connection['charset'],
+                'prefix'   => $connection['prefix'],
+            ], $key);
 
         }
-
-        $this->capsule->addConnection([
-            'driver'   => $config->db['driver'],
-            'host'     => $config->db['host'],
-            'port'     => $config->db['port'],
-            'database' => $config->db['database'],
-            'username' => $config->db['username'],
-            'password' => $config->db['password'],
-            'charset'  => $config->db['charset'],
-            'prefix'   => $config->db['prefix'],
-        ]);
 
         $this->capsule->setEventDispatcher(new Dispatcher(new Container));
 

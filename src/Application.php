@@ -35,7 +35,6 @@ class Application
         $this->basePath = $rootDir;
 
         $this->config   = new Config($_ENV);
-
         $this->user     = null;
         $this->request  = new Request();
         $this->response = new Response();
@@ -51,6 +50,19 @@ class Application
     public function boot(): Application
     {
         RouteHelper::includeRouteFiles(app()->basePath('/routes'));
+        return $this;
+    }
+
+    public function addNewDatabaseConnection(string $name, array $values, $reloadConnections = false): Application
+    {
+        if (!empty($name) && !empty($values)) {
+            $this->config->set('connections', [$name => $values]);
+        }
+
+        if ($reloadConnections) {
+            $this->capsule = new Database($this->config);
+        }
+
         return $this;
     }
 
