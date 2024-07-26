@@ -35,8 +35,8 @@ class Database
                 $manager->extend(self::ORACLE_DRIVER, function($configuration) use ($connection) {
 
                     $connector  = new OracleConnector();
-                    $connection = $connector->connect($configuration);
-                    $db = new Oci8Connection($connection, $connection['database'], $connection["prefix"]);
+                    $config     = $connector->connect($configuration);
+                    $db = new Oci8Connection($config, $connection['database'], $connection["prefix"]);
 
                     if (isset($configuration['schema'])) {
                         $this->sessionVars['CURRENT_SCHEMA'] = $configuration['schema'];
