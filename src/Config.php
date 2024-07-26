@@ -10,25 +10,27 @@ class Config
     {
         $this->config = [
             'app'    => [
-                'id'         => $env['APP_ID'],
+                'id'         => $env['APP_ID']          ?? null,
                 'key'        => $env['APP_KEY'],
                 'name'       => $env['APP_NAME'],
                 'url'        => $env['APP_URL'],
-                'folder'     => $env['APP_FOLDER'] ?? null,
+                'folder'     => $env['APP_FOLDER']      ?? null,
                 'debug'      => $env['APP_DEBUG'],
-                'auth'       => $env['APP_AUTH'],
-                'prefix'     => $env['APP_PREFIX'] ?? null,
-                'devPrefix'  => $env['APP_DEV_PREFIX'] ?? null,
+                'auth'       => $env['APP_AUTH']        ?? null,
+                'prefix'     => $env['APP_PREFIX']      ?? null,
+                'devPrefix'  => $env['APP_DEV_PREFIX']  ?? null,
             ],
-            'db'     => [
-                'driver'   => $env['DB_DRIVER'],
-                'host'     => $env['DB_HOST'],
-                'port'     => $env['DB_PORT'],
-                'database' => $env['DB_DATABASE'],
-                'username' => $env['DB_USERNAME'],
-                'password' => $env['DB_PASSWORD'],
-                'charset'  => $env['DB_CHARSET'],
-                'prefix'   => $env['DB_PREFIX'],
+            'connections' => [
+                'default'     => [
+                    'driver'   => $env['DB_DRIVER'],
+                    'host'     => $env['DB_HOST'],
+                    'port'     => $env['DB_PORT'],
+                    'database' => $env['DB_DATABASE'],
+                    'username' => $env['DB_USERNAME'],
+                    'password' => $env['DB_PASSWORD'],
+                    'charset'  => $env['DB_CHARSET'],
+                    'prefix'   => $env['DB_PREFIX'],
+                ],
             ],
             'ldap' => [
                 'host'          => $env['LDAP_HOST']            ?? '',
@@ -44,6 +46,16 @@ class Config
                 'photoUrl'      => $env['LDAP_PHOTO_URL']       ?? '',
             ],
         ];
+    }
+
+    public function set(string $key, array $value): self
+    {
+        if (array_key_exists($key, $this->config)) {
+            $this->config[$key] = array_merge($this->config[$key], $value);
+        } else {
+            $this->config[$key] = $value;
+        }
+        return $this;
     }
 
     public function __get(string $name)
