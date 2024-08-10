@@ -130,7 +130,7 @@ class Application
 
     public function getHomeUri(): string
     {
-        $protocol = filter_input(INPUT_SERVER, 'REQUEST_SCHEME') ;
+        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
         $host     = filter_input(INPUT_SERVER, 'HTTP_HOST') ;
 
         return "{$protocol}://{$host}";
