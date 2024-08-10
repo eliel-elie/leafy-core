@@ -14,6 +14,13 @@ abstract class UserModel
     public ?string $initials;
     public array $groups = [];
 
+    public function __construct($userid = null)
+    {
+        if(!is_null($userid)) {
+            $this->userid = $userid;
+        }
+    }
+
     public function getInitials(): string
     {
         $numberParts = explode(" ", $this->name);
