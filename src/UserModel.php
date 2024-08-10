@@ -14,13 +14,6 @@ abstract class UserModel
     public ?string $initials;
     public array $groups = [];
 
-    public function __construct($userid = null)
-    {
-        if(!is_null($userid)) {
-            $this->userid = $userid;
-        }
-    }
-
     public function getInitials(): string
     {
         $numberParts = explode(" ", $this->name);
@@ -38,14 +31,14 @@ abstract class UserModel
     public function getAvatar()
     {
         if($this->hasAvatar($this->userid)) {
-            return Application::$app->config->ldap['photoUrl'] . DIRECTORY_SEPARATOR . $this->userid . ".jpg";
+            return Application::$app->config->ldap['photoUrl'] . '/' . $this->userid . ".jpg";
         }
     }
 
     public function hasAvatar(?string $userid) : bool
     {
         $userid  = $userid ?? $this->userid;
-        $url     = Application::$app->config->ldap['photoUrl'] . DIRECTORY_SEPARATOR . strtoupper($userid). ".jpg";
+        $url     = Application::$app->config->ldap['photoUrl'] . '/' . strtoupper($userid). ".jpg";
         $headers = @get_headers($url);
 
         return ($headers && strpos( $headers[0], '200')) ?? false;
