@@ -133,7 +133,12 @@ class Application
         $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
         $host     = filter_input(INPUT_SERVER, 'HTTP_HOST') ;
 
-        return "{$protocol}://{$host}";
+        $folder  = '';
+        if(!empty(self::$app->config->app['folder'])) {
+            $folder = '/'.self::$app->config->app['folder'];
+        }
+
+        return "{$protocol}://{$host}{$folder}";
     }
 
     public static function isGuest(): bool
