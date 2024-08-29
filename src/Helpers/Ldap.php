@@ -126,7 +126,7 @@ class Ldap
     public function getEmail()
     {
         if(!is_null($this->info)) {
-            return $this->info[0]['mail'][0];
+            return $this->info[0]['mail'][0] ?? '';
         }
         return;
     }
