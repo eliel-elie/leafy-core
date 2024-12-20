@@ -3,6 +3,7 @@
 namespace LeafyTech\Core\Helpers;
 
 
+use Exception;
 use InvalidArgumentException;
 
 class Ldap
@@ -16,7 +17,7 @@ class Ldap
     /**
      * The custom configuration.
      */
-    protected $configuration;
+    protected array $configuration;
 
     /**
      * The bound status of the connection.
@@ -118,7 +119,7 @@ class Ldap
     public function getDepartmentName()
     {
         if(!is_null($this->info)) {
-            return $this->info[0]['department'][0];
+            return $this->info[0]['department'][0] ?? '';
         }
         return;
     }
@@ -134,7 +135,7 @@ class Ldap
     public function getPersonalTitle()
     {
         if(!is_null($this->info)) {
-            return $this->info[0]['title'][0];
+            return $this->info[0]['title'][0] ?? '';
         }
         return;
     }
