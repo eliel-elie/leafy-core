@@ -111,7 +111,7 @@ class Ldap
     public function displayName()
     {
         if(!is_null($this->info)) {
-            return $this->info[0]['displayname'][0];
+            return $this->info[0]['displayname'][0] ?? '';
         }
         return;
     }
