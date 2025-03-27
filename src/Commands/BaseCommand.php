@@ -12,7 +12,7 @@ class BaseCommand extends Command
      *
      * @return string
      */
-    protected function getMigrationPath()
+    protected function getMigrationPath(): string
     {
         return ROOT_DIR . '/Migrations';
     }
