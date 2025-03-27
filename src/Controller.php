@@ -3,9 +3,12 @@
 namespace LeafyTech\Core;
 
 use LeafyTech\Core\Middlewares\BaseMiddleware;
+use LeafyTech\Core\Traits\AuthorizesRequests;
 
 class Controller
 {
+    use AuthorizesRequests;
+
     public string $layout        = 'layout';
     public string $action        = '';
 
