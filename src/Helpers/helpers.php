@@ -20,6 +20,21 @@ if (!function_exists('get_request_headers')) {
     }
 }
 
+if (!function_exists('resource_path')) {
+    function resource_path($path = ''): bool|string
+    {
+        $basePath = dirname(__DIR__, 2);
+
+        $resourcePath = $basePath . DIRECTORY_SEPARATOR . 'resources';
+
+        if ($path) {
+            $resourcePath .= DIRECTORY_SEPARATOR . ltrim($path, '/\\');
+        }
+
+        return realpath($resourcePath) ?: $resourcePath;
+    }
+}
+
 if (!function_exists('response')) {
     function response($content = '', $data = [], $status = 200, $headers = []): Response
     {
