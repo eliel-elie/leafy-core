@@ -53,7 +53,7 @@ class MakeMigrations extends BaseCommand
      *
      * @return int
      */
-    public function handle()
+    public function handle(): int
     {
         $name = Str::snake(trim($this->input->getArgument('name')));
 
