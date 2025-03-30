@@ -14,7 +14,7 @@ trait AuthorizesRequests
             $viewPath = app()->basePath('views/errors/403.php');
 
             if (file_exists($viewPath)) {
-                echo $this->render('errors/403');
+                echo app()->router->renderViewOnly('errors/403');
             } else {
 
                 http_response_code(403);
