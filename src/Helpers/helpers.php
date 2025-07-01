@@ -6,6 +6,7 @@ use LeafyTech\Core\Helpers\FlashMessages;
 use LeafyTech\Core\Request;
 use LeafyTech\Core\Response;
 use LeafyTech\Core\Session;
+use LeafyTech\Core\Support\Language\Translator;
 
 if (!function_exists('get_request_headers')) {
     function get_request_headers(): array
@@ -104,5 +105,78 @@ if (! function_exists('base_path')) {
     function base_path($path = ''): string
     {
         return app()->basePath($path);
+    }
+}
+
+if (!function_exists('__')) {
+    function __($key, $replace = [], $locale = null): string
+    {
+        if (!isset(app()->translator) || !(app()->translator instanceof Translator)) {
+            throw new Exception('Translator is not initialized. Make sure to create an instance of Translator before using the helper functions.');
+        }
+
+        return app()->translator->get($key, $replace, $locale);
+    }
+}
+
+if (!function_exists('trans')) {
+    function trans($key, $replace = [], $locale = null): string
+    {
+        return __($key, $replace, $locale);
+    }
+}
+
+if (!function_exists('trans_choice')) {
+    function trans_choice($key, $number, $replace = [], $locale = null): string
+    {
+        if (!isset(app()->translator) || !(app()->translator instanceof Translator)) {
+            throw new Exception('Translator is not initialized. Make sure to create an instance of Translator before using the helper functions.');
+        }
+
+        return app()->translator->choice($key, $number, $replace, $locale);
+    }
+}
+
+if (!function_exists('set_locale')) {
+    function set_locale($locale): void
+    {
+        if (!isset(app()->translator) || !(app()->translator instanceof Translator)) {
+            throw new Exception('Translator is not initialized..');
+        }
+
+        app()->translator->setLocale($locale);
+    }
+}
+
+if (!function_exists('get_locale')) {
+    function get_locale(): string
+    {
+        if (!isset(app()->translator) || !(app()->translator instanceof Translator)) {
+            throw new Exception('Translator is not initialized..');
+        }
+
+        return app()->translator->getLocale();
+    }
+}
+
+if (!function_exists('trans_exists')) {
+    function trans_exists($key, $locale = null): bool
+    {
+        if (!isset(app()->translator) || !(app()->translator instanceof Translator)) {
+            throw new Exception('Translator is not initialized.');
+        }
+
+        return app()->translator->has($key, $locale);
+    }
+}
+
+if (!function_exists('add_translation')) {
+    function add_translation($locale, $group, $key, $value): void
+    {
+        if (!isset(app()->translator) || !(app()->translator instanceof Translator)) {
+            throw new Exception('Translator is not initialized.');
+        }
+
+        app()->translator->addTranslation($locale, $group, $key, $value);
     }
 }

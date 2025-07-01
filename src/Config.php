@@ -19,6 +19,7 @@ class Config
                 'auth'       => $env['APP_AUTH']        ?? null,
                 'prefix'     => $env['APP_PREFIX']      ?? null,
                 'devPrefix'  => $env['APP_DEV_PREFIX']  ?? null,
+                'locale'     => $env['APP_LOCALE']      ?? 'en',
             ],
             'connections' => [
                 'default'     => [
