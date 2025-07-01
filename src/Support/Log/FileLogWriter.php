@@ -28,6 +28,8 @@ class FileLogWriter
         $filename = $this->getLogFilename($level);
         $filepath = $this->logPath . '/' . $filename;
 
+        $this->cleanExcessLogFiles();
+
         if (file_exists($filepath) && filesize($filepath) > $this->maxFileSize) {
             $this->rotateLogFile($filepath);
         }
@@ -48,12 +50,38 @@ class FileLogWriter
         }
     }
 
-    private function rotateLogFile(string $filepath): void
+    private function cleanExcessLogFiles(): void
     {
-        $pathInfo   = pathinfo($filepath);
-        $baseName   = $pathInfo['filename'];
-        $extension  = $pathInfo['extension'];
-        $directory  = $pathInfo['dirname'];
+        $directory = $this->logPath;
+        $baseName  = "app-";
+
+        $pattern   = "{$directory}/{$baseName}*.log";
+        $logFiles  = glob($pattern);
+
+        usort($logFiles, function ($a, $b) {
+            preg_match('/-(\d+)\.log$/', $a, $aMatch);
+            preg_match('/-(\d+)\.log$/', $b, $bMatch);
+            $aNum = $aMatch ? (int)$aMatch[1] : 0;
+            $bNum = $bMatch ? (int)$bMatch[1] : 0;
+
+            return $aNum <=> $bNum;
+        });
+
+        while (count($logFiles) > $this->maxFiles) {
+            $oldestFile = array_shift($logFiles);
+
+            if (file_exists($oldestFile)) {
+                unlink($oldestFile);
+            }
+        }
+    }
+
+    private function rotateLogFile($filepath): void
+    {
+        $pathInfo  = pathinfo($filepath);
+        $baseName  = $pathInfo['filename'];
+        $extension = $pathInfo['extension'];
+        $directory = $pathInfo['dirname'];
 
         for ($i = $this->maxFiles - 1; $i > 0; $i--) {
             $oldFile = "{$directory}/{$baseName}-{$i}.{$extension}";
