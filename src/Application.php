@@ -142,16 +142,16 @@ class Application
 
     public function getHomeUri(): string
     {
-        $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-        $host     = filter_input(INPUT_SERVER, 'HTTP_HOST');
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
+        $host     = $_SERVER['HTTP_HOST'];
 
-        $folder   = '';
+        $basePath = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
 
         if (!empty(self::$app->config->app['folder'])) {
-            $folder = '/' . self::$app->config->app['folder'];
+            $basePath = '/' . trim(self::$app->config->app['folder'], '/');
         }
 
-        return "{$protocol}://{$host}{$folder}";
+        return "{$protocol}://{$host}{$basePath}";
     }
 
     public static function isGuest(): bool
