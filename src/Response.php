@@ -63,7 +63,7 @@ class Response
 
     public function redirect($url): void
     {
-        $url = $url === '/' ? env('APP_URL') : $url;
+        $url = $url === '/' ? app()->getHomeUri() : $url;
         header("Location: $url");
     }
 
@@ -131,7 +131,7 @@ class Response
         return json_encode($stringJson);
     }
 
-    public function header($key, $value, $replace = true)
+    public function header($key, $value, $replace = true): static
     {
         $this->headers[$key] = $value;
         return $this;
@@ -164,7 +164,7 @@ class Response
         return json_encode($stringJson);
     }
 
-    private function sendHeaders()
+    private function sendHeaders(): void
     {
         if(empty($this->headers)) {
             header('Content-Type: Application/json', true, $this->statusCode);
