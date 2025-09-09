@@ -10,12 +10,15 @@ class FileLogWriter
     private int $maxFiles;
 
     public function __construct(
-        string $logPath     = 'logs',
+        string $logPath     = '',
         string $dateFormat  = 'Y-m-d',
         int $maxFileSize    = 10 * 1024 * 1024,
         int $maxFiles       = 10
     ) {
-        $this->logPath      = app()->basePath(rtrim($logPath));
+
+        $logPath = ! empty($logPath) ? rtrim($logPath, '/') : app()->basePath(rtrim('storage/logs'));;
+
+        $this->logPath      = $logPath;
         $this->dateFormat   = $dateFormat;
         $this->maxFileSize  = $maxFileSize;
         $this->maxFiles     = $maxFiles;
