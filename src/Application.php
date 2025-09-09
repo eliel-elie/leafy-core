@@ -4,6 +4,7 @@ namespace LeafyTech\Core;
 
 use Illuminate\Events\Dispatcher;
 use LeafyTech\Core\Exception\NotFoundException;
+use LeafyTech\Core\Handlers\ErrorHandler;
 use LeafyTech\Core\Helpers\Ldap;
 use LeafyTech\Core\Helpers\RouteHelper;
 use LeafyTech\Core\Support\Language\Translator;
@@ -27,6 +28,8 @@ class Application
 
     public ?Controller $controller = null;
 
+
+
     public ?UserModel $user;
 
     public ?Ldap $ldap;
@@ -43,6 +46,8 @@ class Application
 
     public function __construct($rootDir)
     {
+        (new ErrorHandler())->register();
+
         self::$app        = $this;
         $this->basePath   = $rootDir;
 
