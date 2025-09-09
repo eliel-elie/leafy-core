@@ -13,14 +13,24 @@ class Request
         $this->headers = new Header(get_request_headers());
     }
 
-    public function getUrl()
+    public function getUrl(): string
     {
-        $path = $_SERVER['REQUEST_URI'];
-        $position = strpos($path, '?');
-        if ($position !== false) {
-            $path = substr($path, 0, $position);
-        }
-        return $path;
+        $path     = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $basePath = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+        $route    = substr($path, strlen($basePath));
+
+        return '/' . ltrim($route, '/');
+    }
+
+    public function getCurrentRoute(): string
+    {
+        $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+        $basePath = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
+
+        $route = substr($requestUri, strlen($basePath));
+
+        return '/' . ltrim($route, '/');
     }
 
     public function getMethod(): string
@@ -50,6 +60,7 @@ class Request
 
         if (in_array($this->getMethod(), ['PUT', 'PATCH', 'DELETE']) && !empty($_SERVER['CONTENT_LENGTH'])) {
             parse_str(file_get_contents('php://input', false, null, 0, $_SERVER['CONTENT_LENGTH']), $data);
+
             return $data;
         }
 
@@ -59,6 +70,7 @@ class Request
     public function setRouteParams($params): Request
     {
         $this->routeParams = $params;
+
         return $this;
     }
 
@@ -71,5 +83,4 @@ class Request
     {
         return $this->routeParams[$param] ?? $default;
     }
-
 }
