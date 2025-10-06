@@ -2,6 +2,9 @@
 
 namespace LeafyTech\Core;
 
+use InvalidArgumentException;
+use RuntimeException;
+
 class Config
 {
     protected array $config = [];
@@ -57,6 +60,32 @@ class Config
             $this->config[$key] = $value;
         }
         return $this;
+    }
+
+    /**
+     * Loads a configuration file and stores its contents under the given key.
+     *
+     * @param  string  $key
+     * @param  string  $filePath
+     * @return mixed
+     *
+     * @throws InvalidArgumentException  If the file does not exist or is not readable.
+     * @throws RuntimeException          If the file does not return a valid array.
+     */
+    public function loadConfigFile(string $key, string $filePath): mixed
+    {
+        if (! is_readable($filePath)) {
+            throw new InvalidArgumentException("Configuration file not found or not readable: {$filePath}");
+        }
+
+        /** @var mixed $config */
+        $config = require $filePath;
+
+        if (! is_array($config)) {
+            throw new RuntimeException("Configuration file must return an array: {$filePath}");
+        }
+
+        return $this->set($key, $config);
     }
 
     public function get(string $name)
