@@ -59,6 +59,11 @@ class Config
         return $this;
     }
 
+    public function get(string $name)
+    {
+        return $this->config[$name] ?? null;
+    }
+
     public function __get(string $name)
     {
         return $this->config[$name] ?? null;

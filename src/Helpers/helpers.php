@@ -85,6 +85,13 @@ if (! function_exists('session')) {
     }
 }
 
+if (! function_exists('config')) {
+    function config(string $key)
+    {
+        return Application::$app->config->get($key);
+    }
+}
+
 if (! function_exists('fileVersion')) {
     function fileVersion($file, $type = 'js', $dirRoot = 'templates')
     {
