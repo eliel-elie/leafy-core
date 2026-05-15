@@ -83,6 +83,10 @@ class Ldap
         $resultSearch = $this->search($this->configuration['baseDn'], "sAMAccountName=" . $username, ['memberof']);
         $results      = $this->getEntries($resultSearch);
 
+        if (empty($results)) {
+            return [];
+        }
+
         $memberOf     = array_values(
             array_filter(
                 array_map(
@@ -102,42 +106,47 @@ class Ldap
 
     public function userId()
     {
-        if (!is_null($this->info)) {
-            return $this->info[0]['samaccountname'][0];
+        if (!empty($this->info)) {
+            return $this->info[0]['samaccountname'][0] ?? '';
         }
 
+        return '';
     }
 
     public function displayName()
     {
-        if (!is_null($this->info)) {
+        if (!empty($this->info)) {
             return $this->info[0]['displayname'][0] ?? '';
         }
 
+        return '';
     }
 
     public function getDepartmentName()
     {
-        if (!is_null($this->info)) {
+        if (!empty($this->info)) {
             return $this->info[0]['department'][0] ?? '';
         }
 
+        return '';
     }
 
     public function getEmail()
     {
-        if (!is_null($this->info)) {
+        if (!empty($this->info)) {
             return $this->info[0]['mail'][0] ?? '';
         }
 
+        return '';
     }
 
     public function getPersonalTitle()
     {
-        if (!is_null($this->info)) {
+        if (!empty($this->info)) {
             return $this->info[0]['title'][0] ?? '';
         }
 
+        return '';
     }
 
     public function getInfo($username = null)
@@ -212,6 +221,10 @@ class Ldap
 
     public function getEntries($searchResults)
     {
+        if (!$searchResults) {
+            return [];
+        }
+
         return ldap_get_entries($this->connection, $searchResults);
     }
 
