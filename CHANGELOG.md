@@ -5,7 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [1.2.7] - 2026-06-20
+
+### Added
+- Integrated Pest PHP testing framework (`pestphp/pest`).
+- Added comprehensive unit tests for core components (`Router`, `Response`, `Request`, `Config`, `Env`, `Session`, `Token`, `View`, `Header`, `FlashMessages`, and `Repository`).
+- Added a basic feature test suite.
+
+### Fixed
+- Fixed session start behavior in `Session` to check if a session is already active before calling `session_start()`.
+
+### Changed
+- Configured composer test script to run `pest`.
+
 ## [1.2.6] - 2026-06-20
+
 
 ### Added
 - Added language translation support.
