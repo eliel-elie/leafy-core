@@ -13,8 +13,10 @@ class Session
 
     public function __construct()
     {
-        session_name(Str::slug(app()->config->app['name'], '_').'_session');
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_name(Str::slug(app()->config->app['name'], '_').'_session');
+            session_start();
+        }
         $this->msg = new FlashMessages();
 
     }

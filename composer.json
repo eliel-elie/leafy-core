@@ -36,6 +36,15 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^9.6 || ^10.5 || ^11.0",
-    "symfony/var-dumper": "^6.0 || ^7.0"
+    "symfony/var-dumper": "^6.0 || ^7.0",
+    "pestphp/pest": "^3.8"
+  },
+  "config": {
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
+  },
+  "scripts": {
+    "test": "pest"
   }
 }
