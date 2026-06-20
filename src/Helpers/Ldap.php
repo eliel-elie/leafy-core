@@ -24,7 +24,7 @@ class Ldap
      *
      * @var bool
      */
-    protected $bound  = false;
+    protected bool $bound  = false;
 
     /**
      * @var array|false
@@ -49,7 +49,25 @@ class Ldap
         $hosts = explode(',', $this->configuration['host']);
 
         foreach ($hosts as $host) {
-            $this->connection = ldap_connect($host, $this->configuration['port']);
+            $host = trim($host);
+            if (empty($host)) {
+                continue;
+            }
+
+            $uri = $host;
+            $parsed = parse_url($uri);
+            if (!isset($parsed['scheme'])) {
+                $port = $this->configuration['port'] ?? null;
+                $scheme = ($port == 636) ? 'ldaps://' : 'ldap://';
+                $uri = $scheme . $uri;
+                $parsed = parse_url($uri);
+            }
+
+            if (!isset($parsed['port']) && !empty($this->configuration['port'])) {
+                $uri .= ':' . $this->configuration['port'];
+            }
+
+            $this->connection = ldap_connect($uri);
 
             if ($this->connection) {
                 foreach ($this->prepareOptions() as $option => $value) {
@@ -66,8 +84,9 @@ class Ldap
     public function close()
     {
         $connection = $this->connection;
+        $isValidConnection = is_resource($connection) || ($connection instanceof \LDAP\Connection);
 
-        return is_resource($connection) && ldap_close($connection);
+        return $isValidConnection && ldap_close($connection);
     }
 
     public function memberOf($username = null, $devPrefix = null, $appPrefix = null)
@@ -93,9 +112,7 @@ class Ldap
                     fn ($value) => substr($value, 3, strpos($value, ",") - 3),
                     $results[0]['memberof']
                 ),
-                fn ($group) => is_null($devPrefix) || is_null($appPrefix)
-                    ? true
-                    : strpos($group, $devPrefix) !== false && strpos($group, $appPrefix) !== false
+                fn ($group) => is_null($devPrefix) || is_null($appPrefix) || str_contains($group, $devPrefix) && str_contains($group, $appPrefix)
             )
         );
 
