@@ -77,6 +77,19 @@ class Application
     {
         if (!empty($name) && !empty($values)) {
             $this->config->set('connections', [$name => $values]);
+
+            if (isset($this->capsule)) {
+                $this->capsule->getCapsule()->addConnection([
+                    'driver'   => $values['driver'],
+                    'host'     => $values['host'],
+                    'port'     => $values['port'],
+                    'database' => $values['database'],
+                    'username' => $values['username'],
+                    'password' => $values['password'],
+                    'charset'  => $values['charset'],
+                    'prefix'   => $values['prefix'] ?? '',
+                ], $name);
+            }
         }
 
         if ($reloadConnections) {
