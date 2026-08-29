@@ -51,17 +51,25 @@ class Request
     public function getBody(): array
     {
         if ($this->isGet()) {
-            return filter_input_array(INPUT_GET);
+            return filter_input_array(INPUT_GET) ?? [];
+        }
+
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+        if (str_contains($contentType, 'application/json')) {
+            $raw = file_get_contents('php://input');
+            $data = json_decode($raw, true);
+
+            return is_array($data) ? $data : [];
         }
 
         if ($this->isPost()) {
-            return filter_input_array(INPUT_POST);
+            return filter_input_array(INPUT_POST) ?? [];
         }
 
         if (in_array($this->getMethod(), ['PUT', 'PATCH', 'DELETE']) && !empty($_SERVER['CONTENT_LENGTH'])) {
             parse_str(file_get_contents('php://input', false, null, 0, $_SERVER['CONTENT_LENGTH']), $data);
 
-            return $data;
+            return is_array($data) ? $data : [];
         }
 
         return [];
